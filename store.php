@@ -56,7 +56,6 @@ if ($result_products) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Our Store - Savi's creation </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -463,7 +462,6 @@ if ($result_products) {
                 opacity: 0;
                 transform: translate(-50%, -60%);
             }
-
             to {
                 opacity: 1;
                 transform: translate(-50%, -50%);
@@ -490,28 +488,17 @@ if ($result_products) {
 
 <body>
     <header class="header">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white container">
-            <a href="index.php" class="logo navbar-brand">Savi’s creation </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a href="index.php" class="nav-link active">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="store.php" class="nav-link">Store</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="about.php" class="nav-link">About Us</a>
-                    </li>
-                </ul>
-                <div class="cart-icon ms-lg-3 mt-3 mt-lg-0">
-                    <a href="cart.php">Cart <span class="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span></a>
-                </div>
+        <div class="navbar container">
+            <a href="index.php" class="logo">Savi's creation </a>
+            <nav class="nav-links">
+                <a href="index.php">Home</a>
+                <a href="store.php" class="active">Store</a>
+                <a href="about.php">About Us</a>
+            </nav>
+            <div class="cart-icon">
+                <a href="cart.php">Cart <span class="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span></a>
             </div>
-        </nav>
+        </div>
     </header>
 
     <main class="section">
@@ -566,7 +553,7 @@ if ($result_products) {
                         $first_variant = $product['variants_data'][0];
                         $first_image = $first_variant['image'];
                         $start_price = $first_variant['price'];
-
+                        
                         // Check if all variants are out of stock
                         $all_out_of_stock = true;
                         $min_stock = PHP_INT_MAX;
@@ -576,7 +563,7 @@ if ($result_products) {
                             }
                             $min_stock = min($min_stock, $variant['stock']);
                         }
-
+                        
                         // Determine stock status for display
                         $stock_status = '';
                         $stock_class = '';
@@ -652,7 +639,7 @@ if ($result_products) {
     <div id="packageSuccessMessage" class="package-success-message">
         Package added to cart successfully!
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         const productsData = <?php echo json_encode($all_products); ?>;
         const modal = document.getElementById("productModal"),
@@ -674,7 +661,7 @@ if ($result_products) {
             modalProductName.textContent = t.product_name;
             modalProductDesc.textContent = t.description;
             modalVariantSelect.innerHTML = "";
-
+            
             // Hide success message when opening modal
             successMessage.classList.remove("show");
 
@@ -705,11 +692,11 @@ if ($result_products) {
             const selectedOption = modalVariantSelect.options[modalVariantSelect.selectedIndex];
             if (selectedOption) {
                 const stock = parseInt(selectedOption.dataset.stock);
-
+                
                 modalVariantIdInput.value = selectedOption.value;
                 modalPrice.textContent = "LKR " + parseFloat(selectedOption.dataset.price).toFixed(2);
                 modalProductImage.src = selectedOption.dataset.image;
-
+                
                 // Update stock info
                 if (stock <= 0) {
                     modalStockInfo.innerHTML = '<span style="color: var(--out-of-stock-color); font-weight: bold;">Out of Stock</span>';
@@ -767,7 +754,7 @@ if ($result_products) {
                     updateCartCount();
                     // Show success message in modal
                     successMessage.classList.add("show");
-
+                    
                     // Auto-hide message after 3 seconds
                     setTimeout(() => {
                         successMessage.classList.remove("show");
@@ -802,7 +789,7 @@ if ($result_products) {
         function showPackageSuccessMessage() {
             successOverlay.classList.add("show");
             packageSuccessMessage.classList.add("show");
-
+            
             // Auto-hide after 3 seconds
             setTimeout(() => {
                 hidePackageSuccessMessage();

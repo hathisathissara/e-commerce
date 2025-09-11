@@ -1,25 +1,26 @@
 <?php
 session_start();
-require_once 'includes/db_connect.php';
+require_once 'includes/db_connect.php'; // For product/package details if needed
 
 $cart = $_SESSION['cart'] ?? [];
 $customerDetails = $_SESSION['customer_details'] ?? null;
 $total = 0;
 
+// Function to get product/package info from DB
 function getProductOrPackageInfo($conn, $item_id)
 {
     if (strpos($item_id, 'pkg_') === 0) {
         $pkg_id = str_replace('pkg_', '', $item_id);
         $sql = "SELECT package_name AS name, total_price AS price FROM packages WHERE package_id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $pkg_id);
+        $stmt->bind_param("i", $pkg_id); // Use integer for package_id
     } else {
         $sql = "SELECT CONCAT(p.product_name, ' - ', pv.variant_value) AS name, pv.price 
                 FROM product_variants pv 
                 JOIN products p ON pv.product_id = p.product_id 
                 WHERE pv.variant_id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $item_id);
+        $stmt->bind_param("s", $item_id); // Use string for variant_id
     }
 
     $stmt->execute();
@@ -27,26 +28,38 @@ function getProductOrPackageInfo($conn, $item_id)
     return $result ?? ['name' => 'Unknown Item', 'price' => 0];
 }
 
+// Function to find the correct store page
 function findStorePage()
 {
+    // Get the referring page to avoid circular navigation
     $referer = $_SERVER['HTTP_REFERER'] ?? '';
     $current_page = basename($_SERVER['PHP_SELF']);
+
+    // Priority order for store pages (excluding current page)
     $possible_pages = ['shop.php', 'products.php', 'catalog.php', 'store.php', 'index.php'];
+
+    // Remove current page from possibilities to avoid loops
     $possible_pages = array_filter($possible_pages, function ($page) use ($current_page) {
         return $page !== $current_page;
     });
+
+    // If we came from store.php, don't go back to it
     if (strpos($referer, 'store.php') !== false) {
         $possible_pages = array_filter($possible_pages, function ($page) {
             return $page !== 'store.php';
         });
     }
+
+    // Check which pages actually exist
     foreach ($possible_pages as $page) {
         if (file_exists($page)) {
             return $page;
         }
     }
-    return 'index.php';
+
+    return 'index.php'; // Default fallback
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -55,9 +68,6 @@ function findStorePage()
 <head>
     <meta charset="UTF-8">
     <title>Your Cart - Savi’s creation </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap 5 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -69,6 +79,7 @@ function findStorePage()
             --text-light: #f1f2f6;
             --background-color: #f7f1e3;
         }
+
         body {
             font-family: 'Poppins', sans-serif;
             background: var(--background-color);
@@ -76,6 +87,7 @@ function findStorePage()
             padding: 20px;
             color: var(--text-dark);
         }
+
         .cart-container {
             max-width: 1000px;
             margin: auto;
@@ -84,11 +96,13 @@ function findStorePage()
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
             text-align: center;
             margin-bottom: 30px;
             color: var(--primary-color);
         }
+
         .empty-cart {
             text-align: center;
             padding: 40px;
@@ -96,17 +110,20 @@ function findStorePage()
             border-radius: 8px;
             margin: 20px 0;
         }
+
         .empty-cart p {
             font-size: 1.2em;
             color: #666;
             margin-bottom: 20px;
         }
+
         .navigation-buttons {
             display: flex;
             justify-content: center;
             gap: 10px;
             flex-wrap: wrap;
         }
+
         .store-link {
             display: inline-block;
             background: var(--primary-color);
@@ -117,20 +134,26 @@ function findStorePage()
             font-weight: 600;
             transition: background-color 0.3s;
         }
+
         .store-link:hover {
             background: #d63074;
         }
+
         .cart-page-layout {
             display: grid;
             grid-template-columns: 2fr 1fr;
+            /* 2 parts for items, 1 part for summary */
             gap: 30px;
             align-items: flex-start;
         }
+
         @media (max-width: 992px) {
             .cart-page-layout {
                 grid-template-columns: 1fr;
+                /* Stack on smaller screens */
             }
         }
+
         .cart-items-panel,
         .summary-panel {
             background: #fff;
@@ -138,40 +161,49 @@ function findStorePage()
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
+
         .summary-panel {
             position: sticky;
+            /* Make the summary box follow on scroll */
             top: 100px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+
         th,
         td {
             padding: 15px;
             border-bottom: 1px solid #ddd;
             text-align: left;
         }
+
         th {
             background-color: #f8f9fa;
             font-weight: 600;
         }
+
         .actions form {
             display: inline;
         }
+
         .totals-section {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
             margin: 20px 0;
         }
+
         .total-row {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
             font-size: 1.1em;
         }
+
         .final-total {
             font-size: 1.3em;
             font-weight: bold;
@@ -179,6 +211,7 @@ function findStorePage()
             border-top: 2px solid #ddd;
             padding-top: 10px;
         }
+
         .btn {
             background: var(--primary-color);
             color: #fff;
@@ -190,15 +223,19 @@ function findStorePage()
             font-weight: 500;
             transition: background-color 0.3s;
         }
+
         .btn:hover {
             background: #d63074;
         }
+
         .btn-secondary {
             background: var(--secondary-color);
         }
+
         .btn-secondary:hover {
             background: #0770c4;
         }
+
         .add-details-btn {
             background: var(--secondary-color);
             color: white;
@@ -211,9 +248,11 @@ function findStorePage()
             margin-right: 15px;
             transition: background-color 0.3s;
         }
+
         .add-details-btn:hover {
             background: #0770c4;
         }
+
         .checkout-btn {
             background: #27ae60;
             color: white;
@@ -225,19 +264,24 @@ function findStorePage()
             text-decoration: none;
             transition: all 0.3s;
         }
+
         .checkout-btn:hover:not(.disabled) {
             background: #219a52;
         }
+
         .checkout-btn.disabled {
             background: #95a5a6;
             cursor: not-allowed;
             opacity: 0.6;
             filter: blur(1px);
         }
+
         .buttons-container {
             text-align: right;
             margin-top: 20px;
         }
+
+        /* Modal Styles - Fixed Centering */
         .modal {
             display: none;
             position: fixed;
@@ -250,9 +294,11 @@ function findStorePage()
             align-items: center;
             justify-content: center;
         }
+
         .modal.show {
             display: flex;
         }
+
         .modal-content {
             background-color: white;
             padding: 30px;
@@ -267,19 +313,23 @@ function findStorePage()
             transition: transform 0.3s ease;
             position: relative;
         }
+
         .modal.show .modal-content {
             transform: scale(1);
         }
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
         }
+
         .modal-header h2 {
             margin: 0;
             color: var(--primary-color);
         }
+
         .close {
             font-size: 28px;
             font-weight: bold;
@@ -290,18 +340,22 @@ function findStorePage()
             top: 15px;
             right: 20px;
         }
+
         .close:hover {
             color: #000;
         }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         .form-group label {
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
             color: var(--text-dark);
         }
+
         .form-group input,
         .form-group textarea {
             width: 100%;
@@ -312,20 +366,24 @@ function findStorePage()
             font-size: 1em;
             box-sizing: border-box;
         }
+
         .form-group textarea {
             resize: vertical;
             min-height: 100px;
         }
+
         .delivery-info {
             background: #e3f2fd;
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 20px;
         }
+
         .delivery-info h4 {
             margin: 0 0 10px 0;
             color: var(--secondary-color);
         }
+
         .save-details-btn {
             background: var(--primary-color);
             color: white;
@@ -338,23 +396,28 @@ function findStorePage()
             width: 100%;
             transition: background-color 0.3s;
         }
+
         .save-details-btn:hover {
             background: #d63074;
         }
+
         .customer-details-display {
             background: #e8f5e8;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
         }
+
         .customer-details-display h4 {
             margin: 0 0 10px 0;
             color: #27ae60;
         }
+
         .customer-details-display p {
             margin: 5px 0;
             color: var(--text-dark);
         }
+
         .edit-details-btn {
             background: var(--secondary-color);
             color: white;
@@ -365,30 +428,27 @@ function findStorePage()
             font-size: 0.9em;
             margin-top: 10px;
         }
+
         @media (max-width: 768px) {
             .cart-container {
-                padding: 10px;
+                padding: 20px;
             }
+
             .modal-content {
-                width: 98%;
-                padding: 10px;
-                max-height: 98vh;
+                width: 95%;
+                padding: 20px;
+                max-height: 95vh;
             }
+
             .buttons-container {
                 text-align: center;
             }
+
             .add-details-btn,
             .checkout-btn {
                 display: block;
                 width: 100%;
                 margin: 10px 0;
-            }
-            .navigation-buttons {
-                flex-direction: column;
-                gap: 10px;
-            }
-            table th, table td {
-                padding: 8px;
             }
         }
     </style>
@@ -409,50 +469,48 @@ function findStorePage()
                 </div>
             </div>
         <?php else: ?>
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price (LKR)</th>
+                        <th>Quantity</th>
+                        <th>Subtotal (LKR)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($cart as $item_id => $item):
+                        $info = getProductOrPackageInfo($conn, $item_id);
+                        $price = $info['price'];
+                        $name = $info['name'];
+                        $qty = $item['quantity'];
+                        $subtotal = $qty * $price;
+                        $total += $subtotal;
+                    ?>
                         <tr>
-                            <th>Item</th>
-                            <th>Price (LKR)</th>
-                            <th>Quantity</th>
-                            <th>Subtotal (LKR)</th>
-                            <th>Actions</th>
+                            <td><?= htmlspecialchars($name) ?></td>
+                            <td><?= number_format($price, 2) ?></td>
+                            <td>
+                                <form action="includes/cart_functions.php" method="post" style="display:inline-flex; gap:5px; align-items:center;">
+                                    <input type="hidden" name="action" value="update_quantity">
+                                    <input type="hidden" name="item_id" value="<?= htmlspecialchars($item_id) ?>">
+                                    <input type="number" name="quantity" value="<?= $qty ?>" min="1" style="width: 60px;">
+                                    <button type="submit" class="btn btn-secondary">Update</button>
+                                </form>
+                            </td>
+                            <td><?= number_format($subtotal, 2) ?></td>
+                            <td class="actions">
+                                <form action="includes/cart_functions.php" method="post">
+                                    <input type="hidden" name="action" value="remove">
+                                    <input type="hidden" name="item_id" value="<?= htmlspecialchars($item_id) ?>">
+                                    <button type="submit" class="btn">Remove</button>
+                                </form>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($cart as $item_id => $item):
-                            $info = getProductOrPackageInfo($conn, $item_id);
-                            $price = $info['price'];
-                            $name = $info['name'];
-                            $qty = $item['quantity'];
-                            $subtotal = $qty * $price;
-                            $total += $subtotal;
-                        ?>
-                            <tr>
-                                <td><?= htmlspecialchars($name) ?></td>
-                                <td><?= number_format($price, 2) ?></td>
-                                <td>
-                                    <form action="includes/cart_functions.php" method="post" class="d-flex align-items-center gap-2">
-                                        <input type="hidden" name="action" value="update_quantity">
-                                        <input type="hidden" name="item_id" value="<?= htmlspecialchars($item_id) ?>">
-                                        <input type="number" name="quantity" value="<?= $qty ?>" min="1" style="width: 60px;" class="form-control form-control-sm">
-                                        <button type="submit" class="btn btn-secondary btn-sm">Update</button>
-                                    </form>
-                                </td>
-                                <td><?= number_format($subtotal, 2) ?></td>
-                                <td class="actions">
-                                    <form action="includes/cart_functions.php" method="post">
-                                        <input type="hidden" name="action" value="remove">
-                                        <input type="hidden" name="item_id" value="<?= htmlspecialchars($item_id) ?>">
-                                        <button type="submit" class="btn btn-sm">Remove</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
 
             <div class="totals-section">
                 <div class="total-row">
@@ -479,7 +537,7 @@ function findStorePage()
                 <button class="edit-details-btn" onclick="openCustomerModal()">Edit Details</button>
             </div>
 
-            <div class="buttons-container d-flex flex-wrap justify-content-end gap-2">
+            <div class="buttons-container">
                 <a href="<?= findStorePage() ?>" class="store-link" style="background: var(--secondary-color); margin-right: 15px; display: inline-block;">Continue Shopping</a>
                 <button class="add-details-btn" onclick="openCustomerModal()">Add Customer Details</button>
                 <button id="checkout-btn" class="checkout-btn disabled" onclick="proceedToCheckout()" disabled>
@@ -523,8 +581,6 @@ function findStorePage()
         </div>
     </div>
 
-    <!-- Bootstrap JS (for modal accessibility, not required for custom modal) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let customerDetails = null;
         const subtotal = <?= $total ?>;
@@ -533,6 +589,7 @@ function findStorePage()
             loadCustomerDetails();
         });
 
+        // Load from PHP session (already passed via PHP)
         function loadCustomerDetails() {
             <?php if ($customerDetails): ?>
                 customerDetails = <?= json_encode($customerDetails) ?>;
@@ -540,6 +597,7 @@ function findStorePage()
             <?php endif; ?>
         }
 
+        // Display customer info
         function displayCustomerDetails() {
             if (!customerDetails) return;
 
@@ -560,6 +618,7 @@ function findStorePage()
             document.querySelector('.add-details-btn').textContent = 'Edit Customer Details';
         }
 
+        // Delivery Fee
         function calculateDeliveryFee(address) {
             if (address.toLowerCase().includes('moratuwa')) {
                 return 200;
@@ -572,6 +631,7 @@ function findStorePage()
             document.getElementById('final-total').textContent = 'LKR ' + (subtotal + deliveryFee).toFixed(2);
         }
 
+        // Modal Handling
         function openCustomerModal() {
             const modal = document.getElementById('customerModal');
             modal.classList.add('show');
@@ -605,6 +665,7 @@ function findStorePage()
             }
         });
 
+        // ✅ AJAX submission to store in session (via PHP)
         document.getElementById('customerForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -625,6 +686,7 @@ function findStorePage()
                 address
             };
 
+            // 🔄 Send to PHP session via AJAX
             fetch('includes/customer_details.php', {
                     method: 'POST',
                     headers: {
@@ -637,6 +699,7 @@ function findStorePage()
                         address: address
                     }).toString()
                 })
+
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === 'success') {
@@ -649,6 +712,7 @@ function findStorePage()
                 .catch(() => alert('AJAX request failed.'));
         });
 
+        // Checkout
         function proceedToCheckout() {
             if (!customerDetails) {
                 alert('Please add customer details first');
@@ -674,5 +738,7 @@ function findStorePage()
             form.submit();
         }
     </script>
+
 </body>
+
 </html>

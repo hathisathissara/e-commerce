@@ -14,8 +14,6 @@ session_start();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap CSS (only CSS, no JS needed for this page) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         :root {
@@ -34,13 +32,30 @@ session_start();
             color: var(--text-dark);
         }
 
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .section {
+            padding: 60px 20px;
+        }
+
+        /* 1. Header & Navigation (Consistent with other pages) */
         .header {
             background: var(--white);
-            padding: 10px 0;
+            padding: 10px 40px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .logo {
@@ -50,25 +65,26 @@ session_start();
             text-decoration: none;
         }
 
-        .nav-link {
-            color: var(--text-dark) !important;
+        .nav-links a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: var(--text-dark);
             font-weight: 600;
             transition: color 0.3s;
         }
 
-        .nav-link.active,
-        .nav-link:hover {
-            color: var(--primary-color) !important;
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-color);
         }
 
         .cart-icon a {
             font-weight: 600;
             text-decoration: none;
-            color: #fff !important;
+            color: #fff;
             background: var(--secondary-color);
             padding: 8px 15px;
             border-radius: 20px;
-            display: inline-block;
         }
 
         .cart-count {
@@ -79,6 +95,7 @@ session_start();
             margin-left: 5px;
         }
 
+        /* 2. About Page Specific Styles */
         .about-hero {
             background-color: var(--white);
             text-align: center;
@@ -99,6 +116,19 @@ session_start();
             margin: 15px auto 0;
         }
 
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
         .about-content img {
             width: 100%;
             border-radius: 15px;
@@ -116,8 +146,16 @@ session_start();
             color: #636e72;
         }
 
+        /* 3. Values Section (Reusing feature box style) */
         .values-section {
             background-color: var(--white);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            text-align: center;
         }
 
         .feature-box {
@@ -130,6 +168,7 @@ session_start();
             margin-bottom: 10px;
         }
 
+        /* 4. CTA Section */
         .cta-banner {
             text-align: center;
         }
@@ -150,6 +189,7 @@ session_start();
             transform: scale(1.05);
         }
 
+        /* 5. Footer */
         .footer {
             background: var(--text-dark);
             color: var(--text-light);
@@ -163,31 +203,17 @@ session_start();
 
     <!-- 1. HEADER SECTION (Consistent) -->
     <header class="header">
-        <nav class="navbar navbar-expand-lg bg-white">
-            <div class="container">
-                <a href="index.php" class="logo navbar-brand">Savi’s creation </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-                    aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="mainNav">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-                        <li class="nav-item">
-                            <a href="index.php" class="nav-link">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="store.php" class="nav-link">Store</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="about.php" class="nav-link active">About Us</a>
-                        </li>
-                        <li class="nav-item ms-lg-3 mt-2 mt-lg-0 cart-icon">
-                            <a href="cart.php">Cart <span class="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span></a>
-                        </li>
-                    </ul>
-                </div>
+        <div class="navbar container">
+            <a href="index.php" class="logo">Savi’s creation </a>
+            <nav class="nav-links">
+                <a href="index.php">Home</a>
+                <a href="store.php">Store</a>
+                <a href="about.php" class="active">About Us</a>
+            </nav>
+           <div class="cart-icon">
+                <a href="cart.php">Cart <span class="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span></a>
             </div>
-        </nav>
+        </div>
     </header>
 
     <!-- 2. ABOUT HERO SECTION -->
@@ -197,57 +223,49 @@ session_start();
     </section>
 
     <!-- 3. MAIN CONTENT SECTION -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row align-items-center g-5 about-content">
-                <div class="col-12 col-md-6">
-                    <img src="assets/images/501755748_1020474823598105_7453149769962878933_n.jpg" alt="A person wrapping a gift">
-                </div>
-                <div class="col-12 col-md-6 about-text">
-                    <h2>Crafting Happiness, One Gift at a Time.</h2>
-                    <p>
-                        Savi’s creation  started with a simple idea: a gift is not just an item, it's a feeling. It's the warmth of a hug, the brightness of a smile, and the unspoken words of love and appreciation.
-                    </p>
-                    <p>
-                        Founded by Savi, a passionate creator with an eye for detail, our little corner of the internet is dedicated to curating beautiful, high-quality gifts that help you express what's in your heart. Every product and package is chosen with care, ensuring it brings nothing but happiness to you and your loved ones.
-                    </p>
-                </div>
+    <section class="section">
+        <div class="container about-content">
+            <div class="about-image">
+                <img src="assets/images/501755748_1020474823598105_7453149769962878933_n.jpg" alt="A person wrapping a gift">
+            </div>
+            <div class="about-text">
+                <h2>Crafting Happiness, One Gift at a Time.</h2>
+                <p>
+                    Savi’s creation  started with a simple idea: a gift is not just an item, it's a feeling. It's the warmth of a hug, the brightness of a smile, and the unspoken words of love and appreciation.
+                </p>
+                <p>
+                    Founded by Savi, a passionate creator with an eye for detail, our little corner of the internet is dedicated to curating beautiful, high-quality gifts that help you express what's in your heart. Every product and package is chosen with care, ensuring it brings nothing but happiness to you and your loved ones.
+                </p>
             </div>
         </div>
     </section>
 
     <!-- 4. OUR VALUES SECTION -->
-    <section class="py-5 values-section">
+    <section class="section values-section">
         <div class="container">
-            <h2 class="text-center" style="font-size:2.5em; margin-bottom: 40px;">What We Stand For</h2>
-            <div class="row g-4 features-grid">
-                <div class="col-12 col-md-4">
-                    <div class="feature-box text-center">
-                        <span class="icon">💖</span>
-                        <h3>Creativity & Passion</h3>
-                        <p>Every gift is a piece of art, crafted with passion and a creative touch to make it truly unique.</p>
-                    </div>
+            <h2 style="text-align:center; font-size:2.5em; margin-bottom: 40px;">What We Stand For</h2>
+            <div class="features-grid">
+                <div class="feature-box">
+                    <span class="icon">💖</span>
+                    <h3>Creativity & Passion</h3>
+                    <p>Every gift is a piece of art, crafted with passion and a creative touch to make it truly unique.</p>
                 </div>
-                <div class="col-12 col-md-4">
-                    <div class="feature-box text-center">
-                        <span class="icon">✨</span>
-                        <h3>Unmatched Quality</h3>
-                        <p>We source only the best materials and products, because your special moments deserve nothing less.</p>
-                    </div>
+                <div class="feature-box">
+                    <span class="icon">✨</span>
+                    <h3>Unmatched Quality</h3>
+                    <p>We source only the best materials and products, because your special moments deserve nothing less.</p>
                 </div>
-                <div class="col-12 col-md-4">
-                    <div class="feature-box text-center">
-                        <span class="icon">😊</span>
-                        <h3>Customer Happiness</h3>
-                        <p>Your satisfaction is our greatest reward. We're here to make your gifting experience joyful and seamless.</p>
-                    </div>
+                <div class="feature-box">
+                    <span class="icon">😊</span>
+                    <h3>Customer Happiness</h3>
+                    <p>Your satisfaction is our greatest reward. We're here to make your gifting experience joyful and seamless.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- 5. CALL TO ACTION SECTION -->
-    <section class="py-5 cta-banner">
+    <section class="section cta-banner">
         <div class="container">
             <h2 style="font-size:2em; margin-bottom: 10px;">Ready to find the perfect gift?</h2>
             <p style="font-size: 1.2em; color: #636e72; margin-bottom: 30px;">Browse our full collection and let us help you make someone's day special.</p>
@@ -262,8 +280,6 @@ session_start();
         </div>
     </footer>
 
-    <!-- Bootstrap JS (for navbar toggler) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -33,6 +33,8 @@ if ($result_products && $result_products->num_rows > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Savi’s creation  Corner - Welcome</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Swiper JS CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <!-- Google Fonts: Poppins -->
@@ -56,30 +58,17 @@ if ($result_products && $result_products->num_rows > 0) {
             color: var(--text-dark);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
-        }
-
         .section {
-            padding: 60px 20px;
+            padding: 60px 0;
         }
 
         /* 1. Header & Navigation */
         .header {
             background: #fff;
-            padding: 10px 40px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .logo {
@@ -89,24 +78,21 @@ if ($result_products && $result_products->num_rows > 0) {
             text-decoration: none;
         }
 
-        .nav-links a {
-            margin: 0 15px;
-            text-decoration: none;
-            color: var(--text-dark);
+        .nav-link {
+            color: var(--text-dark) !important;
             font-weight: 600;
             transition: color 0.3s;
         }
 
-        .nav-links a:hover,
-        .nav-links a.active,
-        .cart a:hover {
-            color: var(--primary-color);
+        .nav-link.active,
+        .nav-link:hover {
+            color: var(--primary-color) !important;
         }
 
         .cart-icon a {
             font-weight: 600;
             text-decoration: none;
-            color: #fff;
+            color: #fff !important;
             background: var(--secondary-color);
             padding: 8px 15px;
             border-radius: 20px;
@@ -123,8 +109,21 @@ if ($result_products && $result_products->num_rows > 0) {
         /* 2. Swiper Slider */
         .swiper-container {
             width: 100%;
-            height: 80vh;
+            height: 60vh;
             max-height: 500px;
+        }
+
+        @media (max-width: 768px) {
+            .swiper-container {
+                height: 35vh;
+                max-height: 250px;
+            }
+            .slide-content h2 {
+                font-size: 1.5em !important;
+            }
+            .slide-content {
+                padding: 15px !important;
+            }
         }
 
         .swiper-slide {
@@ -169,18 +168,13 @@ if ($result_products && $result_products->num_rows > 0) {
         }
 
         /* 3. Features Section */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            text-align: center;
-        }
-
         .feature-box {
             background: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            margin-bottom: 30px;
         }
 
         .feature-box .icon {
@@ -198,12 +192,6 @@ if ($result_products && $result_products->num_rows > 0) {
             color: var(--text-dark);
         }
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-        }
-
         .product-card {
             background: #fff;
             border-radius: 15px;
@@ -212,6 +200,7 @@ if ($result_products && $result_products->num_rows > 0) {
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            height: 100%;
         }
 
         .product-card:hover {
@@ -223,6 +212,12 @@ if ($result_products && $result_products->num_rows > 0) {
             width: 100%;
             height: 280px;
             object-fit: cover;
+        }
+
+        @media (max-width: 768px) {
+            .product-card img {
+                height: 180px;
+            }
         }
 
         .product-info {
@@ -300,25 +295,36 @@ if ($result_products && $result_products->num_rows > 0) {
 <body>
 
     <header class="header">
-        <div class="navbar container">
-            <a href="index.php" class="logo">Savi’s creation </a>
-            <nav class="nav-links">
-                <a href="index.php" class="active">Home</a>
-                <a href="store.php">Store</a>
-                <a href="about.php">About Us</a>
-            </nav>
-            <div class="cart-icon">
-                <a href="cart.php">Cart <span class="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span></a>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white container">
+            <a href="index.php" class="logo navbar-brand">Savi’s creation </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a href="index.php" class="nav-link active">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="store.php" class="nav-link">Store</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="about.php" class="nav-link">About Us</a>
+                    </li>
+                </ul>
+                <div class="cart-icon ms-lg-3 mt-3 mt-lg-0">
+                    <a href="cart.php">Cart <span class="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span></a>
+                </div>
             </div>
-        </div>
+        </nav>
     </header>
 
     <?php if (!empty($slides)): ?>
-        <div class="swiper-container">
+        <div class="swiper-container mt-3">
             <div class="swiper-wrapper">
                 <?php foreach ($slides as $slide): ?>
                     <div class="swiper-slide" style="background-image: url('<?php echo htmlspecialchars($slide['image_path']); ?>');">
-                        <div class="slide-content">
+                        <div class="slide-content mx-auto">
                             <h2><?php echo htmlspecialchars($slide['title']); ?></h2>
                             <p><?php echo htmlspecialchars($slide['subtitle']); ?></p>
                             <a href="<?php echo htmlspecialchars($slide['link_url'] ?? 'store.php'); ?>" class="slide-btn">Shop Now</a>
@@ -333,21 +339,29 @@ if ($result_products && $result_products->num_rows > 0) {
     <?php endif; ?>
 
     <section class="section features-section">
-        <div class="container features-grid">
-            <div class="feature-box">
-                <span class="icon">🚚</span>
-                <h3>Islandwide Delivery</h3>
-                <p>Fast and secure delivery to your doorstep, anywhere in Sri Lanka.</p>
-            </div>
-            <div class="feature-box">
-                <span class="icon">🎁</span>
-                <h3>Premium Quality</h3>
-                <p>Handpicked gifts made with love and attention to every detail.</p>
-            </div>
-            <div class="feature-box">
-                <span class="icon">💖</span>
-                <h3>Unforgettable Moments</h3>
-                <p>We help you create memories that last a lifetime.</p>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-4">
+                    <div class="feature-box h-100">
+                        <span class="icon">🚚</span>
+                        <h3>Islandwide Delivery</h3>
+                        <p>Fast and secure delivery to your doorstep, anywhere in Sri Lanka.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="feature-box h-100">
+                        <span class="icon">🎁</span>
+                        <h3>Premium Quality</h3>
+                        <p>Handpicked gifts made with love and attention to every detail.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="feature-box h-100">
+                        <span class="icon">💖</span>
+                        <h3>Unforgettable Moments</h3>
+                        <p>We help you create memories that last a lifetime.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -355,16 +369,18 @@ if ($result_products && $result_products->num_rows > 0) {
     <section class="section featured-products">
         <div class="container">
             <h2 class="section-title">Our New Arrivals</h2>
-            <div class="product-grid">
+            <div class="row g-4">
                 <?php foreach ($featured_products as $product): ?>
-                    <div class="product-card">
-                        <img src="<?php echo htmlspecialchars($product['image'] ?? 'https://via.placeholder.com/300'); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>">
-                        <div class="product-info">
-                            <div>
-                                <h3><?php echo htmlspecialchars($product['product_name']); ?></h3>
-                                <p class="price">From LKR <?php echo number_format($product['starting_price'], 2); ?></p>
+                    <div class="col-12 col-sm-6 col-lg-3 d-flex">
+                        <div class="product-card w-100">
+                            <img src="<?php echo htmlspecialchars($product['image'] ?? 'https://via.placeholder.com/300'); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>">
+                            <div class="product-info d-flex flex-column">
+                                <div>
+                                    <h3><?php echo htmlspecialchars($product['product_name']); ?></h3>
+                                    <p class="price">From LKR <?php echo number_format($product['starting_price'], 2); ?></p>
+                                </div>
+                                <a href="store.php" class="view-btn mt-auto">Choose Your Option</a>
                             </div>
-                            <a href="store.php" class="view-btn">Choose Your Option</a>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -387,6 +403,7 @@ if ($result_products && $result_products->num_rows > 0) {
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script>
         new Swiper('.swiper-container', {

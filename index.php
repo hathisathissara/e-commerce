@@ -32,7 +32,7 @@ if ($result_products && $result_products->num_rows > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Savi’s creation  Corner - Welcome</title>
+    <title>Savi’s creation Corner - Welcome</title>
     <!-- Swiper JS CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <!-- Google Fonts: Poppins -->
@@ -284,14 +284,11 @@ if ($result_products && $result_products->num_rows > 0) {
             display: inline-block;
         }
 
-        /* 6. Footer */
+        /* 5. Footer */
         .footer {
             background: var(--text-dark);
             color: var(--text-light);
             padding: 40px 20px;
-        }
-
-        .footer-content {
             text-align: center;
         }
     </style>
@@ -299,19 +296,8 @@ if ($result_products && $result_products->num_rows > 0) {
 
 <body>
 
-    <header class="header">
-        <div class="navbar container">
-            <a href="index.php" class="logo">Savi’s creation </a>
-            <nav class="nav-links">
-                <a href="index.php" class="active">Home</a>
-                <a href="store.php">Store</a>
-                <a href="about.php">About Us</a>
-            </nav>
-            <div class="cart-icon">
-                <a href="cart.php">Cart <span class="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span></a>
-            </div>
-        </div>
-    </header>
+    <!-- 1. HEADER SECTION (Consistent) -->
+    <?php require "layout/header.php" ?>
 
     <?php if (!empty($slides)): ?>
         <div class="swiper-container">
@@ -380,12 +366,8 @@ if ($result_products && $result_products->num_rows > 0) {
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container footer-content">
-            <p>© <?php echo date("Y"); ?> Savi’s creation  Corner. All Rights Reserved.</p>
-            <p>Colombo, Sri Lanka</p>
-        </div>
-    </footer>
+    <!-- 6. FOOTER (Consistent) -->
+    <?php require "layout/footer.php" ?>
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script>

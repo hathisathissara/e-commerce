@@ -202,24 +202,12 @@ session_start();
 <body>
 
     <!-- 1. HEADER SECTION (Consistent) -->
-    <header class="header">
-        <div class="navbar container">
-            <a href="index.php" class="logo">Savi’s creation </a>
-            <nav class="nav-links">
-                <a href="index.php">Home</a>
-                <a href="store.php">Store</a>
-                <a href="about.php" class="active">About Us</a>
-            </nav>
-           <div class="cart-icon">
-                <a href="cart.php">Cart <span class="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span></a>
-            </div>
-        </div>
-    </header>
+    <?php require "layout/header.php" ?>
 
     <!-- 2. ABOUT HERO SECTION -->
     <section class="about-hero">
         <h1>Our Story</h1>
-        <p>From a small dream to a beacon of joy, Savi’s creation  all about celebrating life's precious moments.</p>
+        <p>From a small dream to a beacon of joy, Savi’s creation all about celebrating life's precious moments.</p>
     </section>
 
     <!-- 3. MAIN CONTENT SECTION -->
@@ -231,7 +219,7 @@ session_start();
             <div class="about-text">
                 <h2>Crafting Happiness, One Gift at a Time.</h2>
                 <p>
-                    Savi’s creation  started with a simple idea: a gift is not just an item, it's a feeling. It's the warmth of a hug, the brightness of a smile, and the unspoken words of love and appreciation.
+                    Savi’s creation started with a simple idea: a gift is not just an item, it's a feeling. It's the warmth of a hug, the brightness of a smile, and the unspoken words of love and appreciation.
                 </p>
                 <p>
                     Founded by Savi, a passionate creator with an eye for detail, our little corner of the internet is dedicated to curating beautiful, high-quality gifts that help you express what's in your heart. Every product and package is chosen with care, ensuring it brings nothing but happiness to you and your loved ones.
@@ -274,12 +262,7 @@ session_start();
     </section>
 
     <!-- 6. FOOTER (Consistent) -->
-    <footer class="footer">
-        <div class="container">
-            <p>© <?php echo date("Y"); ?> Savi’s creation Corner. All Rights Reserved.</p>
-        </div>
-    </footer>
-
+    <?php require "layout/footer.php" ?>
 </body>
 
 </html>

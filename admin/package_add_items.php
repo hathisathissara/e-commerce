@@ -239,19 +239,9 @@ $package_contents = $conn->query("SELECT pi.item_id, p.product_name, pv.variant_
 
 <body>
     <div class="admin-wrapper">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2>Savi’s creation </h2>
-                <p>Admin Panel</p>
-            </div>
-            <ul class="sidebar-nav">
-                <li><a href="dashboard.php">Dashboard</a></li>
-                <li><a href="view_products.php">Products</a></li>
-                <li><a href="manage_packages.php" class="active">Packages</a></li>
-                <li><a href="manage_slider.php">Manage Slider</a></li>
-                <li><a href="logout.php" class="logout">Logout</a></li>
-            </ul>
-        </aside>
+        <?php
+        require "layout/header.php"
+        ?>
         <main class="main-content">
             <header class="main-header">
                 <h1>Editing Package: "<?= htmlspecialchars($package['package_name']) ?>"</h1>

@@ -142,18 +142,9 @@ if ($result_fetch) {
 </head>
 <body>
     <div class="admin-wrapper">
-        <aside class="sidebar">
-            <div class="sidebar-header"><h2>Savi’s creation </h2><p>Admin Panel</p></div>
-            <ul class="sidebar-nav">
-                <li><a href="dashboard.php">Dashboard</a></li>
-                <li><a href="manage_orders.php">Orders</a></li>
-                <li><a href="view_products.php">Products</a></li>
-                <li><a href="manage_packages.php">Packages</a></li>
-                <li><a href="manage_customers.php">Customers</a></li>
-                <li><a href="manage_slider.php" class="active">Manage Slider</a></li>
-                <li><a href="logout.php" class="logout">Logout</a></li>
-            </ul>
-        </aside>
+        <?php
+        require "layout/header.php"
+        ?>
 
         <main class="main-content">
             <header class="main-header"><h1>Manage Homepage Slider</h1></header>

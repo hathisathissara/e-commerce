@@ -251,21 +251,9 @@ $packages = $conn->query($sql_get_packages)->fetch_all(MYSQLI_ASSOC);
 
 <body>
     <div class="admin-wrapper">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2>Savi’s creation </h2>
-                <p>Admin Panel</p>
-            </div>
-            <ul class="sidebar-nav">
-                <li><a href="dashboard.php">Dashboard</a></li>
-                <li><a href="manage_orders.php" >Orders</a></li>
-                <li><a href="view_products.php">Products</a></li>
-                <li><a href="manage_packages.php" class="active">Packages</a></li>
-                <li><a href="manage_customers.php">Customers</a></li>
-                <li><a href="manage_slider.php">Manage Slider</a></li>
-                <li><a href="logout.php" class="logout">Logout</a></li>
-            </ul>
-        </aside>
+        <?php
+        require "layout/header.php"
+        ?>
         <main class="main-content">
             <header class="main-header">
                 <h1>Manage Packages</h1>

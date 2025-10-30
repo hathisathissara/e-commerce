@@ -2,8 +2,6 @@
 
 GiftSphere is a full-featured e-commerce website built with PHP and Bootstrap, designed to make finding and sending the perfect gift a delightful experience. Users can browse a curated collection of gifts, filter by occasion or recipient, and add personal touches to make their present truly special.
 
-![GiftSphere Screenshot]([Add a beautiful screenshot of your project's home page or a product page here. For example: https://i.imgur.com/your-image-url.png])
-
 ---
 
 ## 📖 Table of Contents
